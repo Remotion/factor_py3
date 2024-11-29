@@ -83,7 +83,7 @@ def scalar_multiply(k, px, pz, n, a24):
 	qx, qz = px, pz
 	rx, rz = point_double(px, pz, n, a24)
 
-	for i in xrange(3, lk):
+	for i in range(3, lk):
 		if sk[i] == '1':
 			qx, qz = point_add(rx, rz, qx, qz, px, pz, n)
 			rx, rz = point_double(rx, rz, n, a24)
@@ -157,7 +157,7 @@ def multiply_prac(k, px, pz, n, a24):
 
 	# Find best value of v
 	r, i = lucas_cost(k, v[0]), 0
-	for d in xrange(len(v)):
+	for d in range(len(v)):
 		e = lucas_cost(k, v[d])
 		if e < r:
 			r, i = e, d
@@ -254,8 +254,8 @@ def factorize_ecm(n, verbose = False):
         
 	B1, B2 = compute_bounds(n)
 	if verbose:
-		print "Number of digits:", len(str(n))
-		print "Bounds:", B1, B2
+		print( "Number of digits:", len(str(n)) )
+		print( "Bounds:", B1, B2 )
 
 	D = int(math.sqrt(B2))
 	beta = [0] * (D+1)
@@ -264,7 +264,7 @@ def factorize_ecm(n, verbose = False):
 	# ----- Stage 1 and Stage 2 precomputations -----
 	curves, log_B1 = 0, math.log(B1)
 
-	if verbose: print "Sieving primes..."
+	if verbose: print( "Sieving primes...")
 	primes = primeSieve.prime_sieve(B2)
 
 	num_primes = len(primes)
@@ -272,7 +272,7 @@ def factorize_ecm(n, verbose = False):
 	
 	# Compute a B1-powersmooth integer 'k'
 	k = 1
-	for i in xrange(idx_B1):
+	for i in range(idx_B1):
 		p = primes[i]
 		k = k * pow(p, int(log_B1/math.log(p)))
 
@@ -281,24 +281,24 @@ def factorize_ecm(n, verbose = False):
 		curves += 1
 		sigma = random.randint(6, constants.MAX_RND_ECM)
 		if verbose and curves % RESOLUTION == 0: 
-			print "Tried", curves, "random curves..."
+			print( "Tried", curves, "random curves..." )
 
 		# Generate a new random curve in Montgomery form with Suyama's parametrization
 		u = ((sigma * sigma) - 5) % n
 		v = (4 * sigma) % n
 		vmu = v - u
-		A = ((vmu*vmu*vmu) * (3*u + v) / (4*u*u*u*v) - 2) % n
-		a24 = (A+2) / 4
+		A = ((vmu*vmu*vmu) * (3*u + v) // (4*u*u*u*v) - 2) % n
+		a24 = (A+2) // 4
 
 		# ----- Stage 1 -----
-		px, pz = ((u*u*u) / (v*v*v)) % n, 1
+		px, pz = ((u*u*u) // (v*v*v)) % n, 1
 		qx, qz = scalar_multiply(k, px, pz, n, a24)
 		g = utils.gcd(n, qz)
 
 		# If stage 1 is successful, return a non-trivial factor else
 		# move on to stage 2
 		if g != 1 and g != n:
-			print "Stage 1 found factor!"
+			print( "Stage 1 found factor!" )
 			return g
 
 		# ----- Stage 2 -----
@@ -306,7 +306,7 @@ def factorize_ecm(n, verbose = False):
 		S[3], S[4] = point_double(S[1], S[2], n, a24)
 		beta[1] = (S[1] * S[2]) % n
 		beta[2] = (S[3] * S[4]) % n
-		for d in xrange(3, D+1):
+		for d in range(3, D+1):
 			d2 = 2 * d
 			S[d2-1], S[d2] = point_add(S[d2-3], S[d2-2], S[1], S[2], S[d2-5], S[d2-4], n)
 			beta[d] = (S[d2-1] * S[d2]) % n
@@ -317,10 +317,10 @@ def factorize_ecm(n, verbose = False):
 		tx, tz = scalar_multiply(B - 2*D, qx, qz, n, a24)
 		q, step = idx_B1, 2*D
 
-		for r in xrange(B, B2, step):
+		for r in range(B, B2, step):
 			alpha, limit = (rx * rz) % n, r + step
 			while q < num_primes and primes[q] <= limit:
-				d = (primes[q] - r) / 2
+				d = (primes[q] - r) // 2
 				f = (rx - S[2*d-1]) * (rz + S[2*d]) - alpha + beta[d]
 				g = (g * f) % n
 				q += 1
@@ -334,5 +334,5 @@ def factorize_ecm(n, verbose = False):
 	if curves > constants.MAX_CURVES_ECM:
 		return -1
 	else:
-		print "Stage 2 found factor!"
+		print( "Stage 2 found factor!" )
 		return g

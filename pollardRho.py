@@ -20,7 +20,7 @@ def factorize_rho(n, verbose = False):
     for i in range(len(small_primes) - 1, -1, -1):
         r, c, y = 1, small_primes[i], random.randint(1, n-1)
         if verbose:
-            print "Trying offset:", c
+            print( "Trying offset:", c )
 
         m, g, q, ys = random.randint(1, n-1), 1, 1, y
         min_val, k = 0, 0

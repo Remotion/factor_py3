@@ -38,13 +38,13 @@ def factorize_pm1(n, verbose = False):
 
 	B1, B2 = compute_bounds(n)
 	if verbose: 
-		print "Number of digits:", len(str(n))
-		print "Bounds:", B1, B2
+		print( "Number of digits:", len(str(n)) )
+		print( "Bounds:", B1, B2 )
 
 	# ----- Stage 1 -----
 	if verbose: 
-		print "Stage 1..."
-		print "Sieveing primes below", str(B1)
+		print( "Stage 1..." )
+		print( "Sieveing primes below", str(B1) )
 
 	primes_below_b1 = primeSieve.prime_sieve(B1)
 
@@ -67,15 +67,15 @@ def factorize_pm1(n, verbose = False):
 	# NOTE: This stage only works if 'n' has exactly one prime factor between B1 and 
 	# B2 (hence the name 'large-prime variant'). 
 	if verbose: 
-		print "Stage 2..."
-		print "Sieveing primes between", str(B1), "and", str(B2) 
+		print( "Stage 2..." )
+		print( "Sieveing primes between", str(B1), "and", str(B2) )
 
 	primes = primeSieve.segmented_sieve(B1+1, B2)
 	d_cache = [-1] * (constants.MAX_D_PM1 + 1)
 	p, temp_c = primes[0], c
 	c, count = pow(c, p, n), 0
 
-	for pos in xrange(1, len(primes)):
+	for pos in range(1, len(primes)):
 		q = primes[pos]
 		# Use differences between successive primes and cache them
 		d = q - p

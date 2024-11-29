@@ -36,7 +36,7 @@ import utils
 import constants
 
 # Sieve bits
-segs = [[] for _ in xrange(60)]
+segs = [[] for _ in range(60)]
 
 # Primes under 60
 under60 = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59]
@@ -147,20 +147,20 @@ def small_sieve(n):
 	"""
 	correction = (n % 6 > 1)
 	n = {0: n, 1: n-1, 2: n+4, 3: n+3, 4: n+2, 5: n+1}[n % 6]
-	sieve = [True] * (n/3)
+	sieve = [True] * (n//3)
 	sieve[0] = False
-	limit = int(math.sqrt(n))/3 + 1
+	limit = int(math.sqrt(n))//3 + 1
 	# Use a wheel (mod 6)
 	for i in range(limit):
 		if sieve[i]:
- 			k = 3*i + 1 | 1
-			sieve[((k*k)/3) :: (k << 1)] = \
-					[False] * ((n/6 - (k*k)/6 - 1)/k + 1)
+			k = 3*i + 1 | 1
+			sieve[((k*k)//3) :: (k << 1)] = \
+					[False] * ((n//6 - (k*k)//6 - 1)//k + 1)
 			sieve[(k * k + (k << 2) - \
-					(k << 1) * (i & 1)) / 3 :: (k << 1)] = \
-					[False] * ((n/6 - (k*k + (k << 2) - \
-						2*k * (i & 1))/6 - 1)/k + 1)
-	return [2, 3] + [3*i + 1 | 1 for i in xrange(1, n/3 - correction) if sieve[i]]
+					(k << 1) * (i & 1)) // 3 :: (k << 1)] = \
+					[False] * ((n//6 - (k*k + (k << 2) - \
+						2*k * (i & 1))//6 - 1)//k + 1)
+	return [2, 3] + [3*i + 1 | 1 for i in range(1, n//3 - correction) if sieve[i]]
 
 
 def enum1(d, f, g, L, B, segs):
@@ -265,9 +265,9 @@ def sieve_of_atkin(n):
 
 	# Do computations in segments of size 60√n
 	lim = n/60 + 1
-	for L in xrange(1, lim, B):
+	for L in range(1, lim, B):
 		for d in dAll:
-			for k in xrange(len(segs[d])):
+			for k in range(len(segs[d])):
 				segs[d][k] = 0
 
 		# Sieve off the primes (i.e. solutions to the various quadratic
@@ -295,8 +295,8 @@ def sieve_of_atkin(n):
 						x += p2
 
 		# Compute primes
-		for j in xrange((B >> 5) + 1):
-			for x in xrange(32):
+		for j in range((B >> 5) + 1):
+			for x in range(32):
 				k = 60 * (L + x + (j << 5))
 				for d in dAll:
 					if k + d > n:
@@ -358,7 +358,7 @@ def segmented_sieve(lo, hi):
 	# Include primes below √hi if necessary
 	if lo < max_prime:
 		lo_pos = utils.binary_search(lo, base_primes, include_equal = True)
-		for k in xrange(lo_pos, len(base_primes)):
+		for k in range(lo_pos, len(base_primes)):
 			primes[pos] = base_primes[k]
 			pos += 1
 		lo = max_prime
@@ -381,7 +381,7 @@ def segmented_sieve(lo, hi):
 			lo_1 += 1
 
 		# Sieve off primes
-		for i in xrange(1, l1):
+		for i in range(1, l1):
 			p = base_primes[i]
 			k = (p - (lo_1 % p)) % p
 			if (k & 1) == 1: 

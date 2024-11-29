@@ -1,6 +1,7 @@
 import time
 import math
 import constants
+import functools
 import utils, primeSieve
 import pollardRho, pollardPm1, ecm
 
@@ -53,7 +54,7 @@ def factorize_bf(n):
 			i += 1
 		if i > 0:
 			f.append((p, i))
- 			sn = int(math.sqrt(n))
+			sn = int(math.sqrt(n))
 	
 	return f, n
 
@@ -62,7 +63,7 @@ def print_factoring_routine(n, routine_name):
 	"""
 	Prints factoring routine currently being used along with the number to be factored.  
 	"""
-	print "Factoring", str(n), "with", routine_name + "..."
+	print( "Factoring", str(n), "with", routine_name + "...")
 
 
 # TODO: Incorporate Pollard (p-1) into this - ignoring it for now
@@ -72,26 +73,26 @@ def factorize(n, verbose = False, level = 3):
 	"""
 	if verbose: 
 		if n != 1: 
-			print "Factoring", str(n) + "..."
-			print "Number of digits:", len(str(n))
+			print( "Factoring", str(n) + "...")
+			print( "Number of digits:", len(str(n)))
 	if n == 1:
 		return []
 	if utils.is_prime(n):
 		if verbose:
-			print str(n), "is prime!"
+			print( str(n), "is prime!" )
 		return [(n, 1)]
 	else:
 		f, f1 = [], []
 		if level > 2:
 			# Try brute force for small prime factors
 			if verbose: 
-				print "Finding small prime factors..."
+				print( "Finding small prime factors..." )
 			f, n = factorize_bf(n)
 			if verbose:
 				if not f:
-					print "Found no small prime factors... :("
+					print( "Found no small prime factors... :(" )
 				else:
-					print "Prime factors found:", reduce(lambda x, y: x + y, [str(i[0]) + ", " for i in f])[:-2]
+					print( "Prime factors found:", functools.reduce(lambda x, y: x + y, [str(i[0]) + ", " for i in f])[:-2] )
 
 		
 		if level > 1 and n <= constants.SIZE_THRESHOLD_RHO and n > 1:
@@ -102,9 +103,9 @@ def factorize(n, verbose = False, level = 3):
 			g = pollardRho.factorize_rho(n, verbose = verbose)
 			if g != -1:
 				if verbose:
-					print "Found factor", str(g)
+					print( "Found factor", str(g) )
 				f1 = merge_factorizations(factorize(g, verbose = verbose, level = 2), \
-								factorize(n/g, verbose = verbose, level = 2))
+								factorize(n//g, verbose = verbose, level = 2))
 				if f1 != -1:
 					f.extend(f1)
 		
@@ -116,9 +117,9 @@ def factorize(n, verbose = False, level = 3):
 			g = ecm.factorize_ecm(n, verbose = verbose)
 			if g != -1:
 				if verbose:
-					print "Found factor", str(g)
+					print( "Found factor", str(g) )
 				f1 = merge_factorizations(factorize(g, verbose = verbose, level = 2), \
-								factorize(n/g, verbose = verbose, level = 2))
+								factorize(n//g, verbose = verbose, level = 2))
 				if f1 != -1:
 					f.extend(f1)
 				else:
@@ -138,7 +139,7 @@ def print_factorization(n, f):
 		return 1
 
 	s = str(n) + " = "
-	for i in xrange(len(f)-1):
+	for i in range(len(f)-1):
 		pf, exp = f[i][0], f[i][1]
 		s += str(pf) + "^" + str(exp) + " * "
 	
@@ -147,17 +148,18 @@ def print_factorization(n, f):
 
 
 if __name__ == "__main__":
-	while True:
-		n = int(input("Enter number: "))
-		print ""
+	if True:
+		n = 1 + 2305567963945518424753102147331756070  #int(input("Enter number: "))
+		# n = 1 + 124846525121166472890127769845656706959834701767553316679575342375728606681436245953703527478773456698735316531921607496638484885416740029028542605893861455745313937474271661656548230159065196413238268640890
+		#print( "" )
 		t = time.time()
 		f = factorize(n, verbose = True)
 		t1 = time.time()
 		if f == -1:
-			print "\n", n, "couldn't be factored :(\n"
+			print( "\n", n, "couldn't be factored :(\n" )
 		else:
-			print "\n", print_factorization(n, f)
-			print "\nTime:", t1 - t, "s\n"
+			print( "\n", print_factorization(n, f) )
+			print ("\nTime:", t1 - t, "s\n" )
 
 
 		

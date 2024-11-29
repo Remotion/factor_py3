@@ -2,7 +2,8 @@
 
 import math
 import random
-import fractions
+from fractions import Fraction
+from math import gcd
 
 PRIME_THRESHOLD = 100000
 MR_THRESHOLD = 10**36
@@ -48,7 +49,6 @@ def binary_search(x, arr, include_equal = False):
 
 	return l
 
-
 def gcd(a, b):
 	"""
 	Returns the greatest common divisor (GCD) of two specified integers.
@@ -70,7 +70,7 @@ def gcd(a, b):
 		>>> gcd(10**8, 350)
 		>>> 10
 	"""
-	return fractions.gcd(a, b)
+	return math.gcd(a, b) #fractions.gcd(a, b)
 
 def xgcd(a, b):
 	"""
@@ -159,9 +159,9 @@ def is_prime_fast(n, use_probabilistic = False, tolerance = 30):
 	if n >= MR_THRESHOLD: 
 		logn = math.log(n)
 		if not use_probabilistic: 
-			w = xrange(2, 2 * int(logn*log(logn)/log(2))) 
+			w = range(2, 2 * int(logn*math.log(logn)/math.log(2))) 
 		else: 
-			w = xrange(tolerance)
+			w = range(tolerance)
 	elif n >= 1543267864443420616877677640751301: w = firstPrime[:20]
 	elif n >= 564132928021909221014087501701: w = firstPrime[:18]
 	elif n >= 59276361075595573263446330101: w = firstPrime[:16]
@@ -229,7 +229,7 @@ def is_prime_fast(n, use_probabilistic = False, tolerance = 30):
 			p = k
 		x = pow(p, d, n)
 		if x == 1: continue
-		for _ in xrange(s):
+		for _ in range(s):
 			if x+1 == n: break
 			x = x*x % n
 		else: return False
